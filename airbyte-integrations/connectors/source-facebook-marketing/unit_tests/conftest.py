@@ -7,6 +7,7 @@ from facebook_business import FacebookAdsApi, FacebookSession
 from pytest import fixture
 from source_facebook_marketing.api import API
 
+
 FB_API_VERSION = FacebookAdsApi.API_VERSION
 
 
@@ -70,8 +71,7 @@ def api_fixture(some_config, requests_mock, fb_account_response):
     )
     requests_mock.register_uri(
         "GET",
-        FacebookSession.GRAPH
-        + f"/{FB_API_VERSION}/act_{some_config['account_ids'][0]}/",
+        FacebookSession.GRAPH + f"/{FB_API_VERSION}/act_{some_config['account_ids'][0]}/",
         [fb_account_response],
     )
     return api

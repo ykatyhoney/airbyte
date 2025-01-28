@@ -4,9 +4,10 @@ from pathlib import Path
 from typing import Iterable, Optional, Set, Tuple
 
 from connector_ops.utils import Connector, ConnectorLanguage  # type: ignore
+from pydash.objects import get  # type: ignore
+
 from connectors_qa import consts
 from connectors_qa.models import Check, CheckCategory, CheckResult
-from pydash.objects import get  # type: ignore
 
 
 class SecurityCheck(Check):
@@ -17,6 +18,7 @@ class CheckConnectorUsesHTTPSOnly(SecurityCheck):
     name = "Connectors must use HTTPS only"
     description = "Connectors must use HTTPS only when making requests to external services."
     requires_metadata = False
+    runs_on_released_connectors = False
 
     ignore_comment = "# ignore-https-check"  # Define the ignore comment pattern
 
@@ -25,12 +27,14 @@ class CheckConnectorUsesHTTPSOnly(SecurityCheck):
         "tests",
         "unit_tests",
         "integration_tests",
+        "test-integration",
         "build",
         "source-file",
         ".pytest_cache",
         "acceptance_tests_logs",
         ".hypothesis",
         ".ruff_cache",
+        "htmlcov",
     }
 
     ignored_file_name_pattern_for_https_checks = {
@@ -120,6 +124,7 @@ class CheckConnectorUsesPythonBaseImage(SecurityCheck):
     applies_to_connector_languages = [
         ConnectorLanguage.PYTHON,
         ConnectorLanguage.LOW_CODE,
+        ConnectorLanguage.MANIFEST_ONLY,
     ]
 
     def _run(self, connector: Connector) -> CheckResult:
